@@ -1,3 +1,4 @@
+local config = require("data/config")
 local gfx = require("gfx")
 local STEP, acc = 1/30, 0
 local report = {}
@@ -18,8 +19,9 @@ end
 
 function love.draw()
   gfx.begin()
-  gfx.cls(0)
+  gfx.cls(128)
   gfx.print_centered("a mr travelingbard production", 60)
+  gfx.print(config.version,0,120,5)
   gfx.finish()
 
   -- overlay drawn straight to the window, outside the 128x128 canvas
