@@ -79,4 +79,7 @@ local skills = {
 	minor_bulwark = skill("minor bulwark", "active", "increases the whole party's def by 4 (stacks up to 3 times)", { mp_cost = 1 })
 }
 
+-- each skill knows its own key (used for passive checks like "red" / "legacy")
+for id, s in pairs(skills) do s.id = id end
+
 return skills

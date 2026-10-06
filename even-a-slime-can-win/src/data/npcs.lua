@@ -3,8 +3,8 @@
 --   cannot_have  = { "flag", ... }   none of these flags may be set
 --   pages        = { "text", ... }
 --   sets         = { "flag", ... }   flags set when the dialogue closes
---   battle       = { group = "rats_x2", win_sets = { "flag" } } battle starts when the dialogue closes 
--- Win_sets: set only if the party wins
+--   battle       = { group = "rats_x2", on_win = { "flag" } } battle starts when the dialogue closes 
+-- on_win: set only if the party wins
 -- Moves: when `must_have` passes, the NPC walks `steps` once.
 -- Steps: r/l/u/d, or f_<dir> to turn and face a direction.
 
@@ -29,7 +29,7 @@ return {
 			{
 				must_have = { "quest_started" }, cannot_have = { "enemies_defeated" },
 				pages = { "here they come!" },
-				battle = { group = "rats_x2", win_sets = { "enemies_defeated" } },
+				battle = { group = "rats_x2", on_win = { "enemies_defeated" } },
 			},
 			{
 				must_have = { "enemies_defeated" }, cannot_have = { "elder_spoken_to" },

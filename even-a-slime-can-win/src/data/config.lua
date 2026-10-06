@@ -1,3 +1,4 @@
+-- Configuration that is consumed across the system
 -- Small constants that used to be scattered through the .p8
 
 return {
