@@ -7,7 +7,7 @@ local game = require("game")
 local party = require("systems/party")
 local config = require("data/config")
 
-local FONT_PATH, FONT_SIZE = "assets/pico8.ttf", 5
+local FONT_PATH, FONT_SIZE = "assets/PICO-8.ttf", 5
 
 -- true = skip intro/menu/builder and drop straight into the overworld with a test party
 local DEV_QUICKSTART = false
