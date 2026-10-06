@@ -22,10 +22,10 @@ function M.reset()
 end
 M.reset()
 
--- dialogue can end by starting a battle; flags in win_sets are set only if the party wins
+-- dialogue can end by starting a battle; flags in on_win are set only if the party wins
 dialogue.hooks.start_battle = function(def)
 	battle.start(def.group, function(won)
-		if won then flags.set_all(def.win_sets) end
+		if won then flags.set_all(def.on_win) end
 	end)
 end
 

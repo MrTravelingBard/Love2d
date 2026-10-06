@@ -3,14 +3,11 @@
 
 local gfx = require("gfx")
 local flags = require("systems/flags")
-local facing = require("systems/facing")
 local data = require("data/npcs")
 
 local M = { list = {} }
-
 local DIRS = { r = { 1, 0 }, l = { -1, 0 }, u = { 0, -1 }, d = { 0, 1 } }
 
--- (re)build every NPC from the data; call at new game
 function M.init()
 	M.list = {}
 	for _, d in ipairs(data) do
@@ -23,7 +20,7 @@ function M.init()
 			path = {},
 		}
 		for i, mv in ipairs(d.moves or {}) do npc.moves[i] = mv end
-		if d.facing then facing.apply(npc, d.facing) end
+		if d.facing then M.face(npc, d.facing) end
 		M.list[#M.list + 1] = npc
 	end
 end
@@ -68,7 +65,7 @@ local function update_walk(npc)
 
 	if nxt.face then -- turn in place for a moment
 		if not npc.face_timer then
-			facing.apply(npc, nxt.face)
+			M.face(npc, nxt.face)
 			npc.face_timer = npc.face_hold or 20
 		end
 		npc.face_timer = npc.face_timer - 1
@@ -100,13 +97,31 @@ local function update_moves()
 	for _, npc in ipairs(M.list) do
 		for i = #npc.moves, 1, -1 do
 			local m = npc.moves[i]
-			if flags.check(m.requires, m.forbids) then
+			if flags.check(m.must_have, m.cannot_have) then
 				npc.path = build_path(npc.x, npc.y, m.steps)
 				npc.walk_speed = m.speed
 				table.remove(npc.moves, i)
 			end
 		end
 	end
+end
+
+function M.face(npc, dir)
+	-- sprite_offset: 0 = down, 1 = up, 2 = side (flip_x for left)
+	if dir == "r" then npc.sprite_offset, npc.flip_x = 2, false
+	elseif dir == "l" then npc.sprite_offset, npc.flip_x = 2, true
+	elseif dir == "u" then npc.sprite_offset = 1
+	elseif dir == "d" then npc.sprite_offset = 0
+	end
+end
+
+function M.dir_from_delta(dx, dy)
+	if dx < 0 then return "l"
+	elseif dx > 0 then return "r"
+	elseif dy < 0 then return "u"
+	elseif dy > 0 then return "d"
+	end
+	return nil
 end
 
 function M.update()

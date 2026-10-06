@@ -11,10 +11,10 @@ function M.set_all(list)
 	for _, name in ipairs(list or {}) do M.set(name) end
 end
 
--- true if every `requires` flag is set and no `forbids` flag is set
-function M.check(requires, forbids)
-	for _, n in ipairs(requires or {}) do if not M.get(n) then return false end end
-	for _, n in ipairs(forbids or {}) do if M.get(n) then return false end end
+-- true if every `must_have` flag is set and no `cannot_have` flag is set
+function M.check(must_have, cannot_have)
+	for _, n in ipairs(must_have or {}) do if not M.get(n) then return false end end
+	for _, n in ipairs(cannot_have or {}) do if M.get(n) then return false end end
 	return true
 end
 

@@ -1,8 +1,8 @@
--- data/skills.lua
 -- Keyed by skill id. Fields:
 --   name, type ("active"/"passive"), desc
 --   mp_cost   mana cost (default 0)
 --   coin_cost coins spent instead of mana (replaces the old "recover mp" name check)
+
 local function skill(name, type_, desc, extra)
 	local s = { name = name, type = type_, desc = desc, mp_cost = 0 }
 	for k, v in pairs(extra or {}) do s[k] = v end

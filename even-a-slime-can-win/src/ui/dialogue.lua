@@ -2,23 +2,23 @@
 -- then update()/draw() while M.active.
 --
 -- Battles: set M.hooks.start_battle = function(def) ... end  (def = entry.battle from data/npcs.lua,
--- e.g. { group="rats_x2", win_sets={"enemies_defeated"} }). It runs after the box closes.
+-- ex. { group="rats_x2", on_win={"enemies_defeated"} }). 
+-- It runs after the box closes.
 
 local gfx = require("gfx")
 local input = require("input")
 local flags = require("systems/flags")
-local facing = require("systems/facing")
+local npc_sys = require("systems/npc")
 local text = require("ui/text")
 local panel = require("ui/panel")
 
 local M = { active = false, page = 1, hooks = {} }
-
 local BOX = { x = 4, y = 88, w = 120, h = 36, pad = 4, name_h = 8 }
 
 -- first entry whose flag conditions pass
 function M.find_entry(npc)
 	for _, entry in ipairs(npc.dialogue or {}) do
-		if flags.check(entry.requires, entry.forbids) then return entry end
+		if flags.check(entry.must_have, entry.cannot_have) then return entry end
 	end
 	return nil
 end
@@ -34,8 +34,8 @@ function M.start(npc, party_dx, party_dy)
 	if not entry then return false end
 
 	npc.saved_facing = { sprite_offset = npc.sprite_offset, flip_x = npc.flip_x }
-	local dir = facing.from_delta(-(party_dx or 0), -(party_dy or 0))
-	if dir then facing.apply(npc, dir) end
+	local dir = npc_sys.dir_from_delta(-(party_dx or 0), -(party_dy or 0))
+	if dir then npc_sys.face(npc, dir) end
 
 	M.active, M.npc, M.entry = true, npc, entry
 	set_page(1)
