@@ -22,29 +22,29 @@ return {
 				cannot_have = { "quest_started" },
 				pages = {
 					"the colony is under attack! monsters from the east!",
-					"please, you must help us before it is too late!",
+					"please, you must help us before it is too late!"
 				},
-				sets = { "quest_started" },
+				sets = { "quest_started" }
 			},
 			{
 				must_have = { "quest_started" }, cannot_have = { "enemies_defeated" },
 				pages = { "here they come!" },
-				battle = { group = "rats_x2", on_win = { "enemies_defeated" } },
+				battle = { group = "rats_x2", on_win = { "enemies_defeated" } }
 			},
 			{
 				must_have = { "enemies_defeated" }, cannot_have = { "elder_spoken_to" },
 				pages = {
 					"you did it! you pushed them back!",
-					"the elder will want to speak with you.",
-				},
+					"the elder will want to speak with you."
+				}
 			},
 			{
-				pages = { "the colony is safe once more thanks to you." },
-			},
+				pages = { "the colony is safe once more thanks to you." }
+			}
 		},
 		moves = {
-			{ must_have = { "elder_spoken_to" }, steps = list("r,r,r,r,r,r,r,d,f_r"), speed = 0.5 },
-		},
+			{ must_have = { "elder_spoken_to" }, steps = list("r,r,r,r,r,r,r,d,f_r"), speed = 0.5 }
+		}
 	},
 
 	{
@@ -52,16 +52,16 @@ return {
 		dialogue = {
 			{
 				cannot_have = { "enemies_defeated" },
-				pages = { "sorry, i'm busy right now collecting my mana for spells if you fail." },
+				pages = { "sorry, i'm busy right now collecting my mana for spells if you fail." }
 			},
 			{
 				must_have = { "enemies_defeated" },
 				pages = {
 					"good, you defeated them. i thought a static bolt would be needed.",
-					"you have potential. perhaps i can teach you true power in the future.",
-				},
-			},
-		},
+					"you have potential. perhaps i can teach you true power in the future."
+				}
+			}
+		}
 	},
 
 	{
@@ -71,10 +71,10 @@ return {
 				pages = {
 					"sorry, i'm focused on absorbing this metal. it takes a lot of effort",
 					"but it will be worth it to become a metal slime. all that power.",
-					"though it's been many years since we've seen any...",
-				},
-			},
-		},
+					"though it's been many years since we've seen any..."
+				}
+			}
+		}
 	},
 
 	{
@@ -84,17 +84,17 @@ return {
 				cannot_have = { "enemies_defeated" },
 				pages = {
 					"use the skills i taught you to defeat the enemies at the gate.",
-					"i believe in you.",
-				},
+					"i believe in you."
+				}
 			},
 			{
 				must_have = { "enemies_defeated" },
 				pages = {
 					"well done! but don't get sloppy. you still have much to learn.",
-					"i will teach you all that i know soon enough. you'll need every advantage you can get for the battles to come.",
-				},
-			},
-		},
+					"i will teach you all that i know soon enough. you'll need every advantage you can get for the battles to come."
+				}
+			}
+		}
 	},
 
 	{
@@ -103,13 +103,13 @@ return {
 			{
 				pages = {
 					"another fight is coming. i'd rather skip it if i'm being honest.",
-					"i want to protect our people of course, but not dying is also nice.",
-				},
-			},
+					"i want to protect our people of course, but not dying is also nice."
+				}
+			}
 		},
 		moves = {
-			{ must_have = { "elder_spoken_to" }, steps = list("d,d,r,r,r,r,r,r,r,r,r,u,u,f_r"), speed = 0.6 },
-		},
+			{ must_have = { "elder_spoken_to" }, steps = list("d,d,r,r,r,r,r,r,r,r,r,u,u,f_r"), speed = 0.6 }
+		}
 	},
 
 	{
@@ -119,17 +119,17 @@ return {
 				cannot_have = { "rax_intro" },
 				pages = {
 					"i guard the sacred spawning pool of our people.",
-					"it is truly an honor but also a great responsibility.",
+					"it is truly an honor but also a great responsibility."
 				},
-				sets = { "rax_intro" },
+				sets = { "rax_intro" }
 			},
 			{
 				pages = {
 					"if you venture to the rat tunnels, take care not to get lost in its turns.",
-					"some tunnels lead nowhere merely traps they will use to close in on you.",
-				},
-			},
-		},
+					"some tunnels lead nowhere merely traps they will use to close in on you."
+				}
+			}
+		}
 	},
 
 	{
@@ -138,11 +138,16 @@ return {
 			{
 				cannot_have = { "herb_collected" },
 				pages = {
-					"see that green herb? eventually you'll be able to collect them.",
-					"they are healing items and may even unlock some interesting powers.",
-				},
+					"see that green herb? you should collect them. they are healing items."
+				}
 			},
-		},
+			{
+				must_have = { "herb_collected" },
+				pages = {
+					"i have heard old stories that using them might unlock some strange powers."
+				}
+			}
+		}
 	},
 
 	{
@@ -151,10 +156,10 @@ return {
 			{
 				pages = {
 					"zig is much older than he looks. which one? they used to be one in the same.",
-					"that was back before they divided. zig has been a legend since before i spawned.",
-				},
-			},
-		},
+					"that was back before they divided. zig has been a legend since before i spawned."
+				}
+			}
+		}
 	},
 
 	{
@@ -164,10 +169,10 @@ return {
 				pages = {
 					"we haven't heard from the southern colony in awhile.",
 					"we sent them our gold to fuel their defenses after all their losses during the last war with the rats.",
-					"of the five slime colonies only we two remain. i hope they are safe. eldest preserve us.",
-				},
-			},
-		},
+					"of the five slime colonies only we two remain. i hope they are safe. eldest preserve us."
+				}
+			}
+		}
 	},
 
 	{
@@ -177,10 +182,10 @@ return {
 				pages = {
 					"nib and zig are powerful enough to drive off the rats. in their prime, they could even ward off humans.",
 					"i worry though for the cost of using power has it's toll.",
-					"even greats like nib and zig must eventually retire to the spawning pool.",
-				},
-			},
-		},
+					"even greats like nib and zig must eventually retire to the spawning pool."
+				}
+			}
+		}
 	},
 
 	{
@@ -190,10 +195,10 @@ return {
 				pages = {
 					"zig the elder has been sharing the lore of our people with me.",
 					"he was once known as the loremaster before he divided.",
-					"i wonder if he means to pass the title...",
-				},
-			},
-		},
+					"i wonder if he means to pass the title..."
+				}
+			}
+		}
 	},
 
 	{
@@ -201,24 +206,24 @@ return {
 		dialogue = {
 			{
 				cannot_have = { "enemies_defeated", "elder_spoken_to" },
-				pages = { "our survival relies on you four. such a burden despite your youth..." },
+				pages = { "our survival relies on you four. such a burden despite your youth..." }
 			},
 			{
 				must_have = { "enemies_defeated" }, cannot_have = { "elder_spoken_to" },
 				pages = {
 					"thank you for dealing with those assailants.",
-					"your bravery and strength will take you far.",
+					"your bravery and strength will take you far."
 				},
-				sets = { "elder_spoken_to" },
+				sets = { "elder_spoken_to" }
 			},
 			{
 				must_have = { "elder_spoken_to" },
 				pages = {
 					"would you like to hear the old stories of our people?",
 					"the eldest, the dragon, the garuda, the hero, or the lost kings?",
-					"no? maybe next time then.",
-				},
-			},
-		},
-	},
+					"no? maybe next time then."
+				}
+			}
+		}
+	}
 }

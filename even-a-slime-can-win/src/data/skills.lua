@@ -3,13 +3,15 @@
 --   mp_cost   mana cost (default 0)
 --   coin_cost coins spent instead of mana (replaces the old "recover mp" name check)
 
+local M = {}
+
 local function skill(name, type_, desc, extra)
 	local s = { name = name, type = type_, desc = desc, mp_cost = 0 }
 	for k, v in pairs(extra or {}) do s[k] = v end
 	return s
 end
 
-local skills = {
+M.def = {
 	-- quick blow
 	stunning   = skill("stunning", "passive", "all attacks have a 25% chance to stun"),
 	quick_blow = skill("quick blow", "active", "deals damage to single target with higher spd priority"),
@@ -79,7 +81,35 @@ local skills = {
 	minor_bulwark = skill("minor bulwark", "active", "increases the whole party's def by 4 (stacks up to 3 times)", { mp_cost = 1 })
 }
 
--- each skill knows its own key (used for passive checks like "red" / "legacy")
-for id, s in pairs(skills) do s.id = id end
+local function pool(...)
+	local out = {}
+	for _, key in ipairs({ ... }) do
+		out[#out + 1] = assert(M.def[key], "unknown skill key: " .. tostring(key))
+	end
+	return out
+end
 
-return skills
+M.pools = {
+	quick_blow  = pool("stunning", "quick_blow"),
+	immortal    = pool("immortal", "revenge"),
+    eldest      = pool("legacy", "gift"),
+	slip_master = pool("slippery", "slip_stance"),
+	coiled      = pool("capitalize", "coil"),
+    constrictor = pool("lingering", "constrict"),
+	red         = pool("red", "gold_burn", "recover_mp"),
+	once_red    = pool("once_red", "mana_dart"),
+	metal_sworn = pool("metal_sworn", "absorb"),
+	metal       = pool("metal", "sword", "shield"),
+    green       = pool("green","healing_poultice","the_green"),
+    purple      = pool("purple","poison_impact"),
+	kingslayer  = pool("kingslayer", "sharpen"),
+    -- spell shops
+	shop_1      = pool("fire_dart", "cold_breeze", "static_bolt", "minor_shielding"),
+    shop_2      = pool("lesser_fireball","lesser_heat","lesser_frost","lesser_lightning","minor_bulwark")
+	-- planned: skill shops
+}
+
+-- each skill knows its own key (used for passive checks like "red" / "legacy")
+for id, s in pairs(M.def) do s.id = id end
+
+return M

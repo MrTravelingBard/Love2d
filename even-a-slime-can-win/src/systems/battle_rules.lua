@@ -82,6 +82,7 @@ function M.new_battler(src, is_enemy)
 		temp_stats = zero_stats(),
 		skills = src.skills or {},
 		status = {},
+		herb_uses=src.herb_uses
 	}
 end
 
@@ -125,6 +126,7 @@ end
 function M.plan_heal(state, user, target, amount)
 	if (state.items.herb or 0) <= 0 then return nil, "no herbs left!" end
 	state.items.herb = state.items.herb - 1
+	user.herb_uses = user.herb_uses + 1
 	amount = amount or M.HERB_HEAL
 	return {
 		kind = "heal", user = user, target = target, amount = amount,
@@ -204,11 +206,12 @@ function M.finish_enemy_action(state)
 	return state.phase
 end
 
--- write hp/mp back to the party members after the battle
+-- write hp/mp/herb_uses back to the party members after the battle
 function M.sync_to_party(state)
 	for _, b in ipairs(state.battlers) do
 		b.member.hp = b.hp
 		b.member.mp = b.mp
+		b.member.herb_uses = b.herb_uses
 	end
 end
 

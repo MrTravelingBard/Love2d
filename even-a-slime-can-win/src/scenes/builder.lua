@@ -7,7 +7,7 @@ local scene = require("scene")
 local game = require("game")
 local party = require("systems/party")
 local titles = require("data/titles")
-local skillpools = require("data/skillpools")
+local skills = require("data/skills")
 local config = require("data/config")
 local text = require("ui/text")
 local panel = require("ui/panel")
@@ -93,7 +93,7 @@ function M.update()
 
 	elseif mode == "skills" then
 		local _, key = preview(cursor)
-		local list = skillpools[key]
+		local list = skills.pools[key]
 		if input.btnp(2) then skill_cursor = (skill_cursor - 2) % #list + 1 end
 		if input.btnp(3) then skill_cursor = skill_cursor % #list + 1 end
 		if input.btnp(4) then mode = "skill_detail" end
@@ -119,7 +119,7 @@ local function draw_skill_list()
 	local _, key = preview(cursor)
 	panel.draw(18, 16, 109, 104, 0)
 	gfx.print("skills", 21, 19, 7)
-	for i, s in ipairs(skillpools[key]) do
+	for i, s in ipairs(skills.pools[key]) do
 		local y = 28 + (i - 1) * 8
 		if i == skill_cursor then gfx.rectfill(19, y - 2, 108, y + 6, 1) end
 		gfx.print(s.name, 21, y, s.type == "active" and 7 or 15)
@@ -129,7 +129,7 @@ end
 
 local function draw_skill_detail()
 	local _, key = preview(cursor)
-	local s = skillpools[key][skill_cursor]
+	local s = skills.pools[key][skill_cursor]
 	panel.draw(0, 28, 127, 92, 0)
 	gfx.print(s.name, 3, 31, 7)
 	gfx.print(s.type, 3, 38, 6)

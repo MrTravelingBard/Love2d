@@ -5,7 +5,7 @@ local gfx = require("gfx")
 local input = require("input")
 local party = require("systems/party")
 local titles = require("data/titles")
-local skillpools = require("data/skillpools")
+local skills = require("data/skills")
 local config = require("data/config")
 local text = require("ui/text")
 
@@ -31,7 +31,7 @@ function M.close() M.active = false end
 -- ---- helpers ----
 local function section_list(sec, m)
 	if sec == "skills" then
-		return skillpools[m.title] or {}
+		return skills.pools[m.title] or {}
 	elseif sec == "spells" then
 		return {} -- spell pools aren't implemented yet
 	else
@@ -145,6 +145,7 @@ end
 local function draw_detail(m)
 	gfx.cls(0)
 	gfx.print(m.name, 4, 2, 7)
+	gfx.print("herb uses: "..m.herb_uses, 64, 2, 3)
 	gfx.print(m.title_pretty, 4, 9, 6)
 	gfx.line(0, 16, 127, 16, 5)
 
@@ -199,7 +200,7 @@ local function draw_title_swap(m)
 	gfx.line(0, 31, 127, 31, 5)
 
 	gfx.print("skills", 4, 34, 7)
-	for i, s in ipairs(skillpools[key]) do
+	for i, s in ipairs(skills.pools[key]) do
 		local y = 42 + (i - 1) * 24
 		gfx.print(s.name, 4, y, s.type == "active" and 7 or 15)
 		gfx.print(text.wrap_string(s.desc), 4, y + 6, 7)

@@ -24,7 +24,7 @@ M.defs = {
 		-- must have been red before
 		unlock = function(m, flags)
 			return (m.mastered_titles and m.mastered_titles.red) or false
-		end,
+		end
 	},
 
 	metal_sworn = { name = "the metalsworn", sprite = 57 },

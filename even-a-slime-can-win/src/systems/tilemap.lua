@@ -9,7 +9,7 @@ local rows = {}
 
 -- copy the pristine generated map; call again to reset (e.g. new game)
 function M.reset()
-	local src = require("data.map")
+	local src = require("data/map")
 	rows = {}
 	for y, r in ipairs(src.rows) do
 		local copy = {}

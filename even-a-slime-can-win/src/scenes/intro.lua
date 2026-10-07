@@ -16,7 +16,7 @@ end
 function M.update()
 	timer = timer - 1
 	if input.btnp(4) or timer <= 0 then
-		scene.switch(require("scenes.mainmenu"))
+		scene.switch(require("scenes/mainmenu"))
 	end
 end
 

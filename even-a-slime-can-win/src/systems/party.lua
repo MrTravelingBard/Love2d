@@ -3,7 +3,7 @@
 
 local flags = require("systems/flags")
 local titles = require("data/titles")
-local skillpools = require("data/skillpools")
+local skills = require("data/skills")
 local config = require("data/config")
 
 local M = { members = {}, herb = 0, gold = 0 }
@@ -45,7 +45,8 @@ function M.new_member(spec)
 		maxhp_total = 0, maxmp_total = 0,
 		status = {},
 		temp_stats = M.new_temp_stats(),
-		skills = assert(skillpools[spec.title], "no skill pool for title: " .. spec.title),
+		skills = assert(skills.pools[spec.title], "no skill pool for title: " .. spec.title),
+		herb_uses = 0
 	}
 	if spec.title == "red" then m.mastered_titles.red = true end
 	return M.refresh_stats(m)
@@ -116,7 +117,7 @@ function M.apply_title_swap(m, new_title)
 	m.title = new_title
 	m.title_pretty = titles.defs[new_title].name
 	m.sprite = titles.defs[new_title].sprite
-	m.skills = skillpools[new_title]
+	m.skills = skills.pools[new_title]
 	M.refresh_stats(m, true)
 	M.set_leader()
 end
