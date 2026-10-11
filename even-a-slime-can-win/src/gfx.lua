@@ -45,9 +45,17 @@ end
 
 function gfx.fit()
   local ww, wh = love.graphics.getDimensions()
-  scale = math.max(1, floor(math.min(ww / W, wh / H)))
-  ox = floor((ww - W * scale) / 2)
-  oy = floor((wh - H * scale) / 2)
+  --scale = math.max(1, floor(math.min(ww / W, wh / H)))
+  --ox = floor((ww - W * scale) / 2)
+  --oy = floor((wh - H * scale) / 2)
+  --FIX ATTEMPT
+  scale = math.min(math.floor(ww / 128), math.floor(wh / 128))
+  if scale < 1 then scale = 1 end
+
+  -- Calculate offsets to perfectly center the game box
+  ox = math.floor((ww - (128 * scale)) / 2)
+  oy = math.floor((wh - (128 * scale)) / 2)
+  --END OF FIX ATTEMPT
 end
 
 -- wrap your draw code: gfx.begin() ... gfx.finish()
