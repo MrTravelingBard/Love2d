@@ -7,12 +7,6 @@ local game = require("game")
 local party = require("systems/party")
 local config = require("data/config")
 
-local FONT_PATH, FONT_SIZE = "assets/PICO-8.ttf", 5
-
--- true = skip intro/menu/builder and drop straight into the overworld with a test party
-local DEV_QUICKSTART = false
-
-local STEP = 1 / 30 -- game logic runs at PICO-8's 30 ticks per second
 local acc = 0
 
 local function dev_party()
@@ -24,9 +18,9 @@ local function dev_party()
 end
 
 function love.load()
-	gfx.init(FONT_PATH, FONT_SIZE)
+	gfx.init(config.font_path, config.font_size)
 	gfx.load_sheet("assets/sheet.png")
-	if DEV_QUICKSTART then
+	if config.dev_quickstart then
 		game.new(dev_party())
 		scene.switch(require("scenes/overworld"))
 	else
@@ -44,8 +38,8 @@ end
 
 function love.update(dt)
 	acc = math.min(acc + dt, 0.25)
-	while acc >= STEP do
-		acc = acc - STEP
+	while acc >= config.game_speed do
+		acc = acc - config.game_speed
 		input.update()
 		scene.update()
 	end
