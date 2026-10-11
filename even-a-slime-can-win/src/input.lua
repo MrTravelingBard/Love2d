@@ -8,8 +8,8 @@ local BUTTON_KEYS = {
 	[1] = { "right", "d" },
 	[2] = { "up", "w" },
 	[3] = { "down", "s" },
-	[4] = { "z", "c" },
-	[5] = { "x", "v" },
+	[4] = { "z", "return" },
+	[5] = { "x", "rshift" },
 }
 local REPEAT_DELAY, REPEAT_RATE = 15, 4 -- PICO-8: repeat after 15 ticks, then every 4
 
