@@ -6,6 +6,7 @@ on:
     paths:
       - '*/src/**'              # only run when a game's source changes
       - 'landing-page/**'       # ...or when the landing page changes
+      - 'tools/**'              # ...or the shared web build tooling (mobile controls) changes
   workflow_dispatch:            # manual re-runs from the Actions tab
     inputs:
       project:
@@ -72,6 +73,8 @@ jobs:
             echo "Changed top-level paths:"; echo "$CHANGED"
             SELECTED=$(printf '%s' "$ALL" | grep -Fx -f <(echo "$CHANGED") || true)
             if printf '%s\n' "$CHANGED" | grep -qx 'landing-page'; then LANDING=true; fi
+            # shared tooling (tools/) affects every game's web build
+            if printf '%s\n' "$CHANGED" | grep -qx 'tools'; then SELECTED="$ALL"; fi
           fi
 
           JSON=$(printf '%s' "$SELECTED" | jq -R -s -c 'split("\n") | map(select(length > 0))')
@@ -107,19 +110,11 @@ jobs:
           npx --yes love.js -c -t "$GAME" "$GAME/src" "$GAME/build"
           test -f "$GAME/build/index.html"
 
-      # itch.io provides its own title and fullscreen button, so its copy drops the
-      # love.js <h1> title and the footer (fullscreen button, credit, reload hint).
-      # Removing the <h1> also keeps the canvas inside a fixed-size embed viewport.
-      # GitHub Pages keeps the untouched build above.
-      - name: Prepare itch.io build (strip title and fullscreen footer)
-        run: |
-          rm -rf "$GAME/build-itch"
-          cp -r "$GAME/build" "$GAME/build-itch"
-          perl -0pi -e 's/<footer>.*?<\/footer>\s*//s; s/<h1>.*?<\/h1>\s*//s' "$GAME/build-itch/index.html"
-          if grep -q 'Go Fullscreen' "$GAME/build-itch/index.html"; then
-            echo "::error::Footer was not stripped from the itch.io build (love.js template may have changed)"
-            exit 1
-          fi
+      # Adds the mobile layout + touch controls (tools/mobile-controls.js) to the build for
+      # GitHub Pages, and writes build-itch/ for itch.io: the same page minus the love.js title
+      # and fullscreen footer, because itch supplies its own title and fullscreen button.
+      - name: Post-process web build (mobile controls + itch.io copy)
+        run: node tools/postbuild.js "$GAME"
 
       - name: Install Butler CLI (itch.io)
         uses: remarkablegames/setup-butler@v3
