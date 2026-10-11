@@ -12,8 +12,8 @@ return {
 
     -- window config
     window = {
-        width = 768,
-        height = 768
+        width = 512,
+        height = 512
     },
 
 	-- where the party spawns (tile coordinates)

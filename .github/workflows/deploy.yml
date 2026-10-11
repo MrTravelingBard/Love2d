@@ -107,12 +107,26 @@ jobs:
           npx --yes love.js -c -t "$GAME" "$GAME/src" "$GAME/build"
           test -f "$GAME/build/index.html"
 
+      # itch.io provides its own title and fullscreen button, so its copy drops the
+      # love.js <h1> title and the footer (fullscreen button, credit, reload hint).
+      # Removing the <h1> also keeps the canvas inside a fixed-size embed viewport.
+      # GitHub Pages keeps the untouched build above.
+      - name: Prepare itch.io build (strip title and fullscreen footer)
+        run: |
+          rm -rf "$GAME/build-itch"
+          cp -r "$GAME/build" "$GAME/build-itch"
+          perl -0pi -e 's/<footer>.*?<\/footer>\s*//s; s/<h1>.*?<\/h1>\s*//s' "$GAME/build-itch/index.html"
+          if grep -q 'Go Fullscreen' "$GAME/build-itch/index.html"; then
+            echo "::error::Footer was not stripped from the itch.io build (love.js template may have changed)"
+            exit 1
+          fi
+
       - name: Install Butler CLI (itch.io)
         uses: remarkablegames/setup-butler@v3
 
       - name: Deploy to itch.io
         run: |
-          butler push "./$GAME/build" "TravelingBardStudios/$GAME:web" --userversion "${{ github.sha }}"
+          butler push "./$GAME/build-itch" "TravelingBardStudios/$GAME:web" --userversion "${{ github.sha }}"
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
 
