@@ -7,7 +7,7 @@ local party = require("systems/party")
 local titles = require("data/titles")
 local skills = require("data/skills")
 local config = require("data/config")
-local text = require("ui/text")
+local ui = require("ui/ui")
 
 local M = { active = false }
 
@@ -139,7 +139,7 @@ local function draw_list()
 		gfx.print("str " .. m.str .. " dex " .. m.dex .. " con " .. m.con .. " mag " .. m.mag, 4, y + 16, 13)
 		gfx.line(0, y + 24, 127, y + 24, 5)
 	end
-	text.footer("z details  x close")
+	ui.footer("z details  x close")
 end
 
 local function draw_detail(m)
@@ -175,7 +175,7 @@ local function draw_detail(m)
 		if cost then gfx.print(cost, 90, y, col) end
 	end
 
-	text.footer("< > toggle  z " .. (sec == "titles" and "swap" or "view") .. "  x back")
+	ui.footer("< > toggle  z " .. (sec == "titles" and "swap" or "view") .. "  x back")
 end
 
 local function draw_ability(s)
@@ -185,8 +185,8 @@ local function draw_ability(s)
 	local cost, col = cost_text(s)
 	if cost then gfx.print(s.mp_cost and s.mp_cost > 0 and ("mp cost " .. s.mp_cost) or cost, 90, 9, col) end
 	gfx.line(0, 16, 127, 16, 5)
-	gfx.print(text.wrap_string(s.desc), 4, 20, 7)
-	text.footer("z/x back")
+	gfx.print(ui.wrap_string(s.desc), 4, 20, 7)
+	ui.footer("z/x back")
 end
 
 local function draw_title_swap(m)
@@ -203,9 +203,9 @@ local function draw_title_swap(m)
 	for i, s in ipairs(skills.pools[key]) do
 		local y = 42 + (i - 1) * 24
 		gfx.print(s.name, 4, y, s.type == "active" and 7 or 15)
-		gfx.print(text.wrap_string(s.desc), 4, y + 6, 7)
+		gfx.print(ui.wrap_string(s.desc), 4, y + 6, 7)
 	end
-	text.footer("< > title  z confirm  x back")
+	ui.footer("< > title  z confirm  x back")
 end
 
 function M.draw()

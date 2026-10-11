@@ -2,8 +2,7 @@
 
 local gfx = require("gfx")
 local scene = require("scene")
-local menu = require("ui/menu")
-local text = require("ui/text")
+local ui = require("ui/ui")
 local config = require("data/config")
 
 local M = {}
@@ -17,7 +16,7 @@ end
 function M.update()
 	if delay > 0 then delay = delay - 1 return end
 	local action
-	sel, action = menu.control(sel, #OPTIONS)
+	sel, action = ui.control(sel, #OPTIONS)
 	if action == "confirm" and OPTIONS[sel] == "new game" then
 		gfx.pal() -- back to the normal palette
 		scene.switch(require("scenes/builder"))
@@ -30,9 +29,9 @@ function M.draw()
 	gfx.cls()
 	if delay > 0 then return end
 
-	text.draw_centered("even a", 16, 7)
-	text.draw_centered("slime", 24, 12)
-	text.draw_centered("can win", 32, 7)
+	ui.draw_centered("even a", 16, 7)
+	ui.draw_centered("slime", 24, 12)
+	ui.draw_centered("can win", 32, 7)
 
 	-- a row of bobbing slimes
 	local t = love.timer.getTime()

@@ -9,8 +9,7 @@ local party = require("systems/party")
 local titles = require("data/titles")
 local skills = require("data/skills")
 local config = require("data/config")
-local text = require("ui/text")
-local panel = require("ui/panel")
+local ui = require("ui/ui")
 
 local M = {}
 
@@ -107,7 +106,7 @@ end
 -- ---- draw ----
 local function draw_name_box()
 	local b = slots[cursor]
-	panel.draw(28, 50, 99, 70, 0)
+	ui.draw(28, 50, 99, 70, 0)
 	gfx.print("enter name", 32, 53, 7)
 	for i = 1, config.name_length do
 		local blink = (i == char_pos) and (love.timer.getTime() * 4) % 2 < 1
@@ -117,7 +116,7 @@ end
 
 local function draw_skill_list()
 	local _, key = preview(cursor)
-	panel.draw(18, 16, 109, 104, 0)
+	ui.draw(18, 16, 109, 104, 0)
 	gfx.print("skills", 21, 19, 7)
 	for i, s in ipairs(skills.pools[key]) do
 		local y = 28 + (i - 1) * 8
@@ -130,10 +129,10 @@ end
 local function draw_skill_detail()
 	local _, key = preview(cursor)
 	local s = skills.pools[key][skill_cursor]
-	panel.draw(0, 28, 127, 92, 0)
+	ui.draw(0, 28, 127, 92, 0)
 	gfx.print(s.name, 3, 31, 7)
 	gfx.print(s.type, 3, 38, 6)
-	gfx.print(text.wrap_string(s.desc), 3, 46, 7)
+	gfx.print(ui.wrap_string(s.desc), 3, 46, 7)
 	gfx.print("z/x back", 3, 86, 6)
 end
 
@@ -155,7 +154,7 @@ function M.draw()
 	end
 
 	if cursor == config.party_size + 1 then gfx.rectfill(0, 106, 127, 114, 1) end
-	text.draw_centered("> start game <", 108, 10)
+	ui.draw_centered("> start game <", 108, 10)
 	gfx.print("< > title  z name  x skills", 4, 122, 6)
 
 	if mode == "name" then draw_name_box() end

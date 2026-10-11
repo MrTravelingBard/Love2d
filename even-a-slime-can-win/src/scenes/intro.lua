@@ -3,7 +3,7 @@
 local gfx = require("gfx")
 local input = require("input")
 local scene = require("scene")
-local text = require("ui/text")
+local ui = require("ui/ui")
 
 local M = {}
 local timer
@@ -22,7 +22,7 @@ end
 
 function M.draw()
 	gfx.cls()
-	text.draw_centered("a mr traveling bard production")
+	ui.draw_centered("a mr traveling bard production")
 end
 
 return M

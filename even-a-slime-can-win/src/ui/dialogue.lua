@@ -9,8 +9,7 @@ local gfx = require("gfx")
 local input = require("input")
 local flags = require("systems/flags")
 local npc_sys = require("systems/npc")
-local text = require("ui/text")
-local panel = require("ui/panel")
+local ui = require("ui/ui")
 
 local M = { active = false, page = 1, hooks = {} }
 local BOX = { x = 4, y = 88, w = 120, h = 36, pad = 4, name_h = 8 }
@@ -25,7 +24,7 @@ end
 
 local function set_page(n)
 	M.page = n
-	M.wrapped = text.wrap_string(M.entry.pages[n], true) -- wrap once per page, not per frame
+	M.wrapped = ui.wrap_string(M.entry.pages[n], true) -- wrap once per page, not per frame
 end
 
 -- party_dx/dy: the direction the party is facing; the NPC turns to face back at them
@@ -76,18 +75,18 @@ function M.draw()
 	local bx, by, bw, bh, p = BOX.x, BOX.y, BOX.w, BOX.h, BOX.pad
 
 	gfx.rectfill(bx + 2, by + 2, bx + bw + 2, by + bh + 2, 0) -- drop shadow
-	panel.draw(bx, by, bx + bw, by + bh)
+	ui.draw(bx, by, bx + bw, by + bh)
 
 	if M.npc and M.npc.name then
-		local nw = #M.npc.name * text.CHAR_W + p * 2
-		panel.draw(bx, by - BOX.name_h, bx + nw, by)
+		local nw = #M.npc.name * ui.CHAR_W + p * 2
+		ui.draw(bx, by - BOX.name_h, bx + nw, by)
 		gfx.print(M.npc.name, bx + p, by - BOX.name_h + 2, 7)
 	end
 
 	gfx.print(M.wrapped, bx + p, by + p, 7)
 
 	if (love.timer.getTime() * 4) % 2 < 1 then
-		panel.arrow_down(bx + bw - 9, by + bh - 7, 6)
+		ui.arrow_down(bx + bw - 9, by + bh - 7, 6)
 	end
 end
 

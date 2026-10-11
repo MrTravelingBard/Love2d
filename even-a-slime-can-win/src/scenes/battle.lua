@@ -10,7 +10,7 @@ local scene = require("scene")
 local party = require("systems/party")
 local rules = require("systems/battle_rules")
 local enemies = require("data/enemies")
-local text = require("ui/text")
+local ui = require("ui/ui")
 
 local M = {}
 
@@ -334,7 +334,7 @@ function M.draw()
 	gfx.cls()
 
 	if S.mode == "won" or S.mode == "lost" then
-		text.draw_centered(S.message, 44, S.mode == "won" and 11 or 8)
+		ui.draw_centered(S.message, 44, S.mode == "won" and 11 or 8)
 	else
 		gfx.print(S.message, 64 - #S.message * 2, 8, 7)
 	end
