@@ -34,7 +34,14 @@ end
 function gfx.init(fontpath, fontsize)
   love.graphics.setDefaultFilter("nearest", "nearest")
   love.graphics.setLineStyle("rough")
-  canvas = love.graphics.newCanvas(W, H)
+  -- On WebGL 1 (love.js) some browsers/GPUs don't offer an 8-bit canvas, and the default
+  -- ("normal") then silently drops to 4 bits per channel. That wrecks the palette and makes
+  -- phone GPUs dither flat colors into checkerboards. Prefer 8-bit; otherwise use half-float,
+  -- which holds every 8-bit color we need; otherwise keep the default.
+  local formats = love.graphics.getCanvasFormats()
+  local fmt = formats.rgba8 and "rgba8" or (formats.rgba16f and "rgba16f") or "normal"
+  local ok, c = pcall(love.graphics.newCanvas, W, H, { format = fmt })
+  canvas = ok and c or love.graphics.newCanvas(W, H)
   font = fontpath and love.graphics.newFont(fontpath, fontsize, "mono")
               or love.graphics.newFont(8, "mono")
   font:setFilter("nearest", "nearest")
@@ -45,20 +52,12 @@ end
 
 function gfx.fit()
   local ww, wh = love.graphics.getDimensions()
-  --scale = math.max(1, floor(math.min(ww / W, wh / H)))
-  --ox = floor((ww - W * scale) / 2)
-  --oy = floor((wh - H * scale) / 2)
-  --FIX ATTEMPT
-  scale = math.min(math.floor(ww / 128), math.floor(wh / 128))
-  if scale < 1 then scale = 1 end
-
-  -- Calculate offsets to perfectly center the game box
-  ox = math.floor((ww - (128 * scale)) / 2)
-  oy = math.floor((wh - (128 * scale)) / 2)
-  --END OF FIX ATTEMPT
+  scale = math.max(1, floor(math.min(ww / W, wh / H)))
+  ox = floor((ww - W * scale) / 2)
+  oy = floor((wh - H * scale) / 2)
 end
 
--- wrap your draw code: gfx.begin() ... gfx.finish()
+-- wrap draw code: gfx.begin() ... gfx.finish()
 function gfx.begin()
   love.graphics.setCanvas(canvas)
   love.graphics.origin()
