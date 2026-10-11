@@ -2,7 +2,7 @@
 
 local gfx = require("gfx")
 local scene = require("scene")
-local ui = require("ui/ui")
+local ui = require("ui")
 local config = require("data/config")
 
 local M = {}

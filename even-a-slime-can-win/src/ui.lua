@@ -12,18 +12,22 @@ M.LIMIT_DIALOGUE = 29  -- chars per line inside the dialogue box
 function M.control(sel, count)
     -- up/down moves the selection (wrapping); O confirms, X goes back.
     -- returns new_selection, action  (action is "confirm", "back" or nil)
-    if input.btnp(2) then
-		sel = sel - 1
-		if sel < 1 then
-            sel = count
-        end
-	end
+	if count == 0 then
+		sel = 1
+	else
+		if input.btnp(2) then
+			sel = sel - 1
+			if sel < 1 then
+				sel = count
+			end
+		end
 
-	if input.btnp(3) then
-		sel = sel + 1
-		if sel > count then
-            sel = 1
-        end
+		if input.btnp(3) then
+			sel = sel + 1
+			if sel > count then
+				sel = 1
+			end
+		end
 	end
    	
     local action = nil

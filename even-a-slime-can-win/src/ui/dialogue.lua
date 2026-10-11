@@ -9,7 +9,7 @@ local gfx = require("gfx")
 local input = require("input")
 local flags = require("systems/flags")
 local npc_sys = require("systems/npc")
-local ui = require("ui/ui")
+local ui = require("ui")
 
 local M = { active = false, page = 1, hooks = {} }
 local BOX = { x = 4, y = 88, w = 120, h = 36, pad = 4, name_h = 8 }

@@ -3,7 +3,7 @@
 local gfx = require("gfx")
 local input = require("input")
 local scene = require("scene")
-local ui = require("ui/ui")
+local ui = require("ui")
 
 local M = {}
 local timer

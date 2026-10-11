@@ -10,7 +10,7 @@ local scene = require("scene")
 local party = require("systems/party")
 local rules = require("systems/battle_rules")
 local enemies = require("data/enemies")
-local ui = require("ui/ui")
+local ui = require("ui")
 
 local M = {}
 

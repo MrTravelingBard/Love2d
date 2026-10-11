@@ -9,7 +9,7 @@ local party = require("systems/party")
 local titles = require("data/titles")
 local skills = require("data/skills")
 local config = require("data/config")
-local ui = require("ui/ui")
+local ui = require("ui")
 
 local M = {}
 

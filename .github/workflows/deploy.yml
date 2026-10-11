@@ -1,0 +1,146 @@
+name: Love2D Web Deployer
+
+on:
+  push:
+    branches: [ main ]          # a merge from develop -> main lands here as a push
+    paths:
+      - '*/src/**'              # only run when a game's source changes
+      - 'landing-page/**'       # ...or when the landing page changes
+  workflow_dispatch:            # manual re-runs from the Actions tab
+    inputs:
+      project:
+        description: 'Game folder to deploy, "all" for every game, "landing-page" for the landing page only, or "auto-detect" to diff like a push would'
+        required: true
+        default: 'auto-detect'
+        type: string
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.info.outputs.projects }}
+      landing_changed: ${{ steps.info.outputs.landing_changed }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so we can diff the whole merge, not just the last commit
+
+      - name: Identify Projects To Deploy
+        id: info
+        env:
+          MANUAL_PROJECT: ${{ github.event.inputs.project }}
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          # Every top-level folder with src/main.lua is a game. New games are picked up automatically.
+          ALL=""
+          for d in */; do
+            d="${d%/}"
+            if [ -f "$d/src/main.lua" ]; then ALL="$ALL$d"$'\n'; fi
+          done
+
+          LANDING=false
+
+          if [ "${MANUAL_PROJECT:-auto-detect}" = "landing-page" ]; then
+            echo "Manual override: deploying landing page only."
+            LANDING=true
+            SELECTED=""
+
+          elif [ "${MANUAL_PROJECT:-auto-detect}" = "all" ]; then
+            echo "Manual override: deploying all games."
+            SELECTED="$ALL"
+
+          elif [ -n "${MANUAL_PROJECT:-}" ] && [ "$MANUAL_PROJECT" != "auto-detect" ]; then
+            if ! printf '%s' "$ALL" | grep -qxF "$MANUAL_PROJECT"; then
+              echo "::error::'$MANUAL_PROJECT' is not a game folder (no $MANUAL_PROJECT/src/main.lua)"
+              exit 1
+            fi
+            echo "Manual override: deploying $MANUAL_PROJECT only."
+            SELECTED="$MANUAL_PROJECT"
+
+          else
+            # Diff against the commit main was on before this push, so a multi-commit
+            # merge from develop is fully covered. Fall back to HEAD~1 if unavailable.
+            BASE="${BEFORE_SHA:-}"
+            if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] \
+               || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+              BASE="HEAD~1"
+            fi
+            CHANGED=$(git diff --name-only "$BASE" HEAD | cut -d/ -f1 | sort -u)
+            echo "Changed top-level paths:"; echo "$CHANGED"
+            SELECTED=$(printf '%s' "$ALL" | grep -Fx -f <(echo "$CHANGED") || true)
+            if printf '%s\n' "$CHANGED" | grep -qx 'landing-page'; then LANDING=true; fi
+          fi
+
+          JSON=$(printf '%s' "$SELECTED" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "Deploying games: $JSON"
+          echo "Deploying landing page: $LANDING"
+          echo "projects=$JSON" >> "$GITHUB_OUTPUT"
+          echo "landing_changed=$LANDING" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: detect
+    if: needs.detect.outputs.projects != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to push to gh-pages
+    strategy:
+      fail-fast: false # one game failing shouldn't cancel the others
+      max-parallel: 1  # games push to the same gh-pages branch, so run one at a time
+      matrix:
+        project: ${{ fromJson(needs.detect.outputs.projects) }}
+    env:
+      GAME: ${{ matrix.project }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Web Version (love.js)
+        run: |
+          npx --yes love.js -c -t "$GAME" "$GAME/src" "$GAME/build"
+          test -f "$GAME/build/index.html"
+
+      - name: Install Butler CLI (itch.io)
+        uses: remarkablegames/setup-butler@v3
+
+      - name: Deploy to itch.io
+        run: |
+          butler push "./$GAME/build" "TravelingBardStudios/$GAME:web" --userversion "${{ github.sha }}"
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./${{ matrix.project }}/build
+          target-folder: docs/${{ matrix.project }} # each game gets its own sub-folder on gh-pages
+          branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-landing:
+    # Waits for game deploys so the two never push to gh-pages at the same time.
+    # always() lets it run even when no games deployed (the deploy job was skipped).
+    needs: [detect, deploy]
+    if: always() && needs.detect.result == 'success' && needs.detect.outputs.landing_changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to push to gh-pages
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy Landing Page to GitHub Pages Root
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./landing-page
+          target-folder: docs
+          branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          clean: false # keep the docs/<game> sub-folders that the game deploys created
