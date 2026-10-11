@@ -8,9 +8,17 @@ local ui = require("ui")
 local M = {}
 local timer
 
+local function love_splash()
+	ui.draw_centered("built with love2d",60,14)
+end
+
+local function studio_splash()
+	ui.draw_centered("a mr traveling bard production")
+end
+
 function M.enter()
 	gfx.pal(0, 128, 1) -- screen color 0 becomes the dark brown "secret" color 128
-	timer = 60
+	timer = 120
 end
 
 function M.update()
@@ -22,7 +30,11 @@ end
 
 function M.draw()
 	gfx.cls()
-	ui.draw_centered("a mr traveling bard production")
+	if timer > 60 then
+		love_splash()
+	else 
+		studio_splash()
+	end
 end
 
 return M
